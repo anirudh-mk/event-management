@@ -57,7 +57,7 @@ class UserLoginAPI(APIView):
         else:
             return Response(
                 data={'invalid username or password'},
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_404_NOT_FOUND
             )
 
 
@@ -69,7 +69,7 @@ class EventAPI(APIView):
             if not event_queryset:
                 return Response(
                     data={"error": "invalid event id"},
-                    status=status.HTTP_200_OK
+                    status=status.HTTP_404_NOT_FOUND
                 )
 
             serializer = EventSerializer(event_queryset, many=False)
@@ -102,15 +102,30 @@ class EventAPI(APIView):
 
         if not event_queryset:
             return Response(
-                data={"error": 'invalid event id'},
-                status=status.HTTP_400_BAD_REQUEST
+                data={"error": 'event not found'},
+                status=status.HTTP_404_NOT_FOUND
             )
 
         serializer = EventSerializer(event_queryset, data=request.data, partial=True)
         if serializer.is_valid():
             response_object = serializer.save()
             return Response(
-                data={"success":f'{response_object.title} edited successfully'},
+                data={"success": f'{response_object.title} edited successfully'},
                 status=status.HTTP_200_OK
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, id):
+        event_queryset = Event.objects.filter(id=id).first()
+
+        if not event_queryset:
+            return Response(
+                data={"error": "event not found"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        event_queryset.delete()
+        return Response(
+            data={"success": "Event deleted successfully"},
+            status=status.HTTP_200_OK
+        )
