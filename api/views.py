@@ -95,3 +95,22 @@ class EventAPI(APIView):
                 status=status.HTTP_200_OK
             )
         return Response(data=serializer.errors)
+
+    def patch(self, request, id):
+
+        event_queryset = Event.objects.filter(id=id).first()
+
+        if not event_queryset:
+            return Response(
+                data={"error": 'invalid event id'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        serializer = EventSerializer(event_queryset, data=request.data, partial=True)
+        if serializer.is_valid():
+            response_object = serializer.save()
+            return Response(
+                data={"success":f'{response_object.title} edited successfully'},
+                status=status.HTTP_200_OK
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
