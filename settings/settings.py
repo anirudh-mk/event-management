@@ -77,11 +77,14 @@ WSGI_APPLICATION = "settings.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": decouple_config("DATABASE_ENGINE"),
+        "NAME": decouple_config("DATABASE_NAME"),
+        "USER": decouple_config("DATABASE_USER"),
+        "PASSWORD": decouple_config("DATABASE_PASSWORD"),
+        "HOST": decouple_config("DATABASE_HOST"),
+        "PORT": decouple_config("DATABASE_PORT"),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
