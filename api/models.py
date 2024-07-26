@@ -19,7 +19,7 @@ class User(AbstractUser):
     def full_name(self):
         if not self.last_name:
             return self.first_name
-        return self.first_name + "" + self.last_name
+        return self.first_name + " " + self.last_name
 
 
 class Event(models.Model):

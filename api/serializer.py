@@ -30,7 +30,6 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
 
 class EventSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Event
         fields = '__all__'
@@ -48,3 +47,17 @@ class EventRegisterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data['id'] = uuid.uuid4()
         return Registration.objects.create(**validated_data)
+
+
+class ListRegisterSerializer(serializers.ModelSerializer):
+    event = serializers.CharField(source='event.title')
+    user = serializers.CharField(source='user.full_name')
+
+    class Meta:
+        model = Registration
+        fields = [
+            'id',
+            'event',
+            'user',
+            'created_at'
+        ]
