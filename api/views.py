@@ -156,3 +156,17 @@ class ReportAPI(APIView):
             data=serializer.data,
             status=status.HTTP_200_OK
         )
+
+
+class CountEventsAPI(APIView):
+    def get(self, request):
+        registration_count = Registration.objects.count()
+        event_count = Event.objects.count()
+        return Response(
+            data={
+                "registration_count": registration_count,
+                "event_count": event_count
+                  },
+            status=status.HTTP_200_OK
+        )
+
