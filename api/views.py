@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from api.serializer import UserRegisterSerializer
 from django.contrib.auth import authenticate
+from utils.permissions import JWTToken
 
 
 # Create your views here.
@@ -41,13 +42,14 @@ class UserLoginAPI(APIView):
         user = authenticate(username=username, password=password)
 
         if user:
+            token = JWTToken().generate(user)
             return Response(
-                data={'user login successfully'},
+                data=token,
                 status=status.HTTP_200_OK
             )
 
         else:
             return Response(
-                data={'invalid username or password'}, 
+                data={'invalid username or password'},
                 status=status.HTTP_400_BAD_REQUEST
             )
