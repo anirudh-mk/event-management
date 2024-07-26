@@ -5,7 +5,7 @@ from rest_framework import status
 from api.serializer import UserRegisterSerializer
 from django.contrib.auth import authenticate
 from utils.permissions import JWTToken
-
+from utils.permissions import CustamizePermission
 
 # Create your views here.
 class UserRegisterAPI(APIView):
@@ -53,3 +53,7 @@ class UserLoginAPI(APIView):
                 data={'invalid username or password'},
                 status=status.HTTP_400_BAD_REQUEST
             )
+class a(APIView):
+    authentication_classes = [CustamizePermission]
+    def get(self, request):
+        return Response(data={"hello"}, status=status.HTTP_400_BAD_REQUEST)
