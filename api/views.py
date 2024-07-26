@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from api.models import Event
-from api.serializer import UserRegisterSerializer, EventSerializer
+from api.serializer import UserRegisterSerializer, EventSerializer, RegisterSerializer
 from django.contrib.auth import authenticate
 from utils.permissions import JWTToken
 from utils.permissions import CustamizePermission
@@ -128,4 +128,19 @@ class EventAPI(APIView):
         return Response(
             data={"success": "Event deleted successfully"},
             status=status.HTTP_200_OK
+        )
+
+
+class RegisterAPI(APIView):
+    def post(self, request):
+        serializer = RegisterSerializer(data=request.data)
+        if serializer.is_valid():
+            response_object = serializer.save()
+            return Response(
+                data={"success": f"registration to {response_object.event.title} successfull"},
+                status=status.HTTP_200_OK
+            )
+        return Response(
+            data=serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
         )

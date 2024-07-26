@@ -1,7 +1,7 @@
 import uuid
 
 from rest_framework import serializers
-from .models import User, Event
+from .models import User, Event, Registration
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):
@@ -38,3 +38,13 @@ class EventSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data['id'] = uuid.uuid4()
         return Event.objects.create(**validated_data)
+
+
+class RegisterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Registration
+        fields = '__all__'
+
+    def create(self, validated_data):
+        validated_data['id'] = uuid.uuid4()
+        return Registration.objects.create(**validated_data)
