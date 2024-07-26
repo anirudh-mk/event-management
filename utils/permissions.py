@@ -69,3 +69,17 @@ class JWTToken:
         else:
             token = None
         return token
+
+    @staticmethod
+    def fetch_user_id(request):
+        token = authentication.get_authorization_header(request).decode("utf-8").split()
+        payload = jwt.decode(
+            token[1], "SEDKLK23D@LK323#@!2", algorithms=["HS256"], verify=True
+        )
+        user_id = payload.get("id")
+        if user_id is None:
+            raise Exception(
+                "The corresponding JWT token does not contain the 'user_id' key"
+            )
+        return user_id
+
