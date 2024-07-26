@@ -51,13 +51,19 @@ class EventRegisterSerializer(serializers.ModelSerializer):
 
 class ListRegisterSerializer(serializers.ModelSerializer):
     event = serializers.CharField(source='event.title')
+    event_date = serializers.CharField(source='event.date')
     user = serializers.CharField(source='user.full_name')
+    username = serializers.CharField(source='user.username')
+    email = serializers.CharField(source='user.email')
 
     class Meta:
         model = Registration
         fields = [
             'id',
             'event',
+            'event_date',
             'user',
+            'username',
+            'email',
             'created_at'
         ]
