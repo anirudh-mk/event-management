@@ -1,7 +1,7 @@
 import uuid
 
 from rest_framework import serializers
-from .models import User
+from .models import User, Event
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):
@@ -27,3 +27,14 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         if password != self.initial_data.get('confirm_password'):
             raise serializers.ValidationError('password doesnot match')
         return password
+
+
+class EventSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Event
+        fields = '__all__'
+
+    def create(self, validated_data):
+        validated_data['id'] = uuid.uuid4()
+        return Event.objects.create(**validated_data)

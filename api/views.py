@@ -2,10 +2,11 @@ from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from api.serializer import UserRegisterSerializer
+from api.serializer import UserRegisterSerializer, EventSerializer
 from django.contrib.auth import authenticate
 from utils.permissions import JWTToken
 from utils.permissions import CustamizePermission
+
 
 # Create your views here.
 class UserRegisterAPI(APIView):
@@ -15,7 +16,7 @@ class UserRegisterAPI(APIView):
             serializer.save()
 
             return Response(
-                data={'user created successfully'},
+                data={"response": 'user created successfully'},
                 status=status.HTTP_201_CREATED
             )
 
@@ -53,7 +54,15 @@ class UserLoginAPI(APIView):
                 data={'invalid username or password'},
                 status=status.HTTP_400_BAD_REQUEST
             )
-class a(APIView):
-    authentication_classes = [CustamizePermission]
-    def get(self, request):
-        return Response(data={"hello"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class EventAPI(APIView):
+    def post(self, request):
+        serializer = EventSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                data={"response": 'Event Created Successfully'},
+                status=status.HTTP_200_OK
+            )
+        return Response(data=serializer.errors)
