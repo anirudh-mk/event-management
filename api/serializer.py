@@ -49,7 +49,7 @@ class EventRegisterSerializer(serializers.ModelSerializer):
         return Registration.objects.create(**validated_data)
 
 
-class ListRegisterSerializer(serializers.ModelSerializer):
+class ReportSerializer(serializers.ModelSerializer):
     event = serializers.CharField(source='event.title')
     event_date = serializers.CharField(source='event.date')
     user = serializers.CharField(source='user.full_name')

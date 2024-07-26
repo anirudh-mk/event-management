@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from api.models import Event, Registration
-from api.serializer import UserRegisterSerializer, EventSerializer, EventRegisterSerializer, ListRegisterSerializer
+from api.serializer import UserRegisterSerializer, EventSerializer, EventRegisterSerializer, ReportSerializer
 from django.contrib.auth import authenticate
 from utils.permissions import JWTToken
 from utils.permissions import CustamizePermission
@@ -146,12 +146,12 @@ class EventRegisterAPI(APIView):
         )
 
 
-class ListRegisterAPI(APIView):
+class ReportAPI(APIView):
 
     def get(self, request):
 
         registration_queryset = Registration.objects.all()
-        serializer = ListRegisterSerializer(registration_queryset, many=True)
+        serializer = ReportSerializer(registration_queryset, many=True)
         return Response(
             data=serializer.data,
             status=status.HTTP_200_OK
