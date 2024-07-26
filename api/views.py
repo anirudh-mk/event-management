@@ -3,8 +3,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-from api.models import Event
-from api.serializer import UserRegisterSerializer, EventSerializer, RegisterSerializer
+from api.models import Event, Registration
+from api.serializer import UserRegisterSerializer, EventSerializer, EventRegisterSerializer
 from django.contrib.auth import authenticate
 from utils.permissions import JWTToken
 from utils.permissions import CustamizePermission
@@ -131,9 +131,9 @@ class EventAPI(APIView):
         )
 
 
-class RegisterAPI(APIView):
+class EventRegisterAPI(APIView):
     def post(self, request):
-        serializer = RegisterSerializer(data=request.data)
+        serializer = EventRegisterSerializer(data=request.data)
         if serializer.is_valid():
             response_object = serializer.save()
             return Response(

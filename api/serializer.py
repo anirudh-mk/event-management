@@ -40,7 +40,7 @@ class EventSerializer(serializers.ModelSerializer):
         return Event.objects.create(**validated_data)
 
 
-class RegisterSerializer(serializers.ModelSerializer):
+class EventRegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Registration
         fields = '__all__'
