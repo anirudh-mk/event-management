@@ -11,6 +11,9 @@ class User(AbstractUser):
     id = models.CharField(primary_key=True, max_length=36, default=uuid.uuid4())
     first_name = models.CharField(max_length=200)
     email = models.CharField(max_length=200, unique=True)
+    admin = models.BooleanField(default=False)
+    organizer = models.BooleanField(default=False)
+    attandee = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'user'

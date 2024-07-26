@@ -6,7 +6,7 @@ from api.models import Event, Registration
 from api.serializer import UserRegisterSerializer, EventSerializer, EventRegisterSerializer, ReportSerializer
 from django.contrib.auth import authenticate
 
-from utils.decoration import role_required
+from utils.decorator import role_required
 from utils.permissions import JWTToken
 from utils.permissions import CustamizePermission
 
@@ -63,6 +63,8 @@ class UserLoginAPI(APIView):
 
 
 class EventAPI(APIView):
+    authentication_classes = [CustamizePermission]
+
     def get(self, request, id=None):
         if id:
             event_queryset = Event.objects.filter(id=id).first()
@@ -116,6 +118,7 @@ class EventAPI(APIView):
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
     def delete(self, request, id):
         event_queryset = Event.objects.filter(id=id).first()
 
@@ -148,8 +151,10 @@ class EventRegisterAPI(APIView):
 
 
 class ReportAPI(APIView):
-    def get(self, request):
+    authentication_classes = [CustamizePermission]
 
+    @role_required(['admin', 'organizer'])
+    def get(self, request):
         registration_queryset = Registration.objects.all()
         serializer = ReportSerializer(registration_queryset, many=True)
         return Response(
@@ -160,7 +165,8 @@ class ReportAPI(APIView):
 
 class CountEventsAPI(APIView):
     authentication_classes = [CustamizePermission]
-    @role_required()
+
+    @role_required(['admin', 'organizer'])
     def get(self, request):
         registration_count = Registration.objects.count()
         event_count = Event.objects.count()
@@ -168,7 +174,6 @@ class CountEventsAPI(APIView):
             data={
                 "registration_count": registration_count,
                 "event_count": event_count
-                  },
+            },
             status=status.HTTP_200_OK
         )
-
