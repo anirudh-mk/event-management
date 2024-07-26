@@ -9,12 +9,16 @@ from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
     id = models.CharField(primary_key=True, max_length=36, default=uuid.uuid4())
+    first_name = models.CharField(max_length=200)
+    email = models.CharField(max_length=200, unique=True)
 
     class Meta:
         db_table = 'user'
 
     @property
     def full_name(self):
+        if not self.last_name:
+            return self.first_name
         return self.first_name + "" + self.last_name
 
 
