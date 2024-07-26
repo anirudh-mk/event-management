@@ -65,6 +65,7 @@ class UserLoginAPI(APIView):
 class EventAPI(APIView):
     authentication_classes = [CustamizePermission]
 
+    @role_required(['admin', 'organizer'])
     def get(self, request, id=None):
         if id:
             event_queryset = Event.objects.filter(id=id).first()
@@ -89,6 +90,7 @@ class EventAPI(APIView):
             status=status.HTTP_200_OK
         )
 
+    @role_required(['admin'])
     def post(self, request):
         serializer = EventSerializer(data=request.data)
         if serializer.is_valid():
@@ -99,6 +101,7 @@ class EventAPI(APIView):
             )
         return Response(data=serializer.errors)
 
+    @role_required(['admin'])
     def patch(self, request, id):
 
         event_queryset = Event.objects.filter(id=id).first()
@@ -118,7 +121,7 @@ class EventAPI(APIView):
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
+    @role_required(['admin'])
     def delete(self, request, id):
         event_queryset = Event.objects.filter(id=id).first()
 
