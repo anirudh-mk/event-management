@@ -2,6 +2,8 @@ from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+
+from api.models import Event
 from api.serializer import UserRegisterSerializer, EventSerializer
 from django.contrib.auth import authenticate
 from utils.permissions import JWTToken
@@ -20,7 +22,10 @@ class UserRegisterAPI(APIView):
                 status=status.HTTP_201_CREATED
             )
 
-        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            data=serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
 
 class UserLoginAPI(APIView):
@@ -57,12 +62,36 @@ class UserLoginAPI(APIView):
 
 
 class EventAPI(APIView):
+    def get(self, request, id=None):
+        if id:
+            event_queryset = Event.objects.filter(id=id).first()
+
+            if not event_queryset:
+                return Response(
+                    data={"error": "invalid event id"},
+                    status=status.HTTP_200_OK
+                )
+
+            serializer = EventSerializer(event_queryset, many=False)
+            return Response(
+                data=serializer.data,
+                status=status.HTTP_200_OK
+            )
+
+        event_queryset = Event.objects.all()
+
+        serializer = EventSerializer(event_queryset, many=True)
+        return Response(
+            data=serializer.data,
+            status=status.HTTP_200_OK
+        )
+
     def post(self, request):
         serializer = EventSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            response_object = serializer.save()
             return Response(
-                data={"response": 'Event Created Successfully'},
+                data={"response": f'{response_object.title} Created Successfully'},
                 status=status.HTTP_200_OK
             )
         return Response(data=serializer.errors)
