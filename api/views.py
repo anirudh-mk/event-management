@@ -13,16 +13,21 @@ from .signals import notification_signal, update_notification_signal
 
 
 class UserRegisterAPI(APIView):
+    """
+     API view to handle user registration.
+     """
     def post(self, request):
+        # pass data to serializer
         serializer = UserRegisterSerializer(data=request.data)
+        # check the serializer object is valid
         if serializer.is_valid():
             serializer.save()
-
+            # if serializer is valid return success response
             return Response(
-                data={"response": 'user created successfully'},
+                data={"success": 'user created successfully'},
                 status=status.HTTP_201_CREATED
             )
-
+        # if serializer object is not valid return serializer errors
         return Response(
             data=serializer.errors,
             status=status.HTTP_400_BAD_REQUEST
@@ -30,34 +35,43 @@ class UserRegisterAPI(APIView):
 
 
 class UserLoginAPI(APIView):
+    """
+         API view to handle user registration.
+         """
     def post(self, request):
+        # fetch username and password from the body
         username = request.data.get('username')
         password = request.data.get('password')
 
+        # check username is none or not if none return failure response
         if username is None:
             return Response(
-                data={"please enter your username"},
+                data={"error": "please enter your username"},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
+        # check password is none or not if none return failure response
         if password is None:
             return Response(
-                data={'please enter your password'},
+                data={"error": 'please enter your password'},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
+        # authenticate user with username and password
         user = authenticate(username=username, password=password)
 
+        # check wether the user exists or not
         if user:
+            # if user exists generate jwt token with username and send token in response
             token = JWTToken().generate(user)
             return Response(
                 data=token,
                 status=status.HTTP_200_OK
             )
-
+        # if  user not exists return error response
         else:
             return Response(
-                data={'invalid username or password'},
+                data={'error': 'invalid username or password'},
                 status=status.HTTP_404_NOT_FOUND
             )
 
