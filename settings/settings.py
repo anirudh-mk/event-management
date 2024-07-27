@@ -38,8 +38,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    'api',
-    'rest_framework'
+    'rest_framework',
+    'api.apps.ApiConfig',
 ]
 
 MIDDLEWARE = [
@@ -129,3 +129,10 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = 'api.User'
+
+EMAIL_BACKEND = decouple_config("EMAIL_BACKEND")
+EMAIL_HOST = decouple_config("EMAIL_HOST")
+EMAIL_HOST_USER = decouple_config("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = decouple_config("EMAIL_HOST_PASSWORD")
+EMAIL_PORT = decouple_config("EMAIL_PORT")
+EMAIL_USE_TLS = decouple_config("EMAIL_USE_TLS")
