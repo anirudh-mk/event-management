@@ -23,7 +23,9 @@ class CustamizePermission(BasePermission):
         expiry = payload.get("expiry", None)
 
         if id and expiry:
-            # if expiry check expiry and return Token Expired
+            current_time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+            if current_time > expiry:
+                raise ValidationError({"error": "token expired"})
             user = User.objects.filter(id=id)
             if user.exists():
                 return user.first(), payload
