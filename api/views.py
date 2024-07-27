@@ -9,9 +9,7 @@ from django.contrib.auth import authenticate
 from utils.decorator import role_required
 from utils.permissions import JWTToken
 from utils.permissions import CustamizePermission
-from .signals import notification_signal
-
-# Create your views here.
+from .signals import notification_signal, update_notification_signal
 
 
 class UserRegisterAPI(APIView):
@@ -120,6 +118,7 @@ class EventAPI(APIView):
         serializer = EventSerializer(event_queryset, data=request.data, partial=True)
         if serializer.is_valid():
             response_object = serializer.save()
+            update_notification_signal.send(sender=response_object.__class__, instance=response_object)
             return Response(
                 data={"success": f'{response_object.title} edited successfully'},
                 status=status.HTTP_200_OK
